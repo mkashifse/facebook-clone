@@ -20,9 +20,13 @@ function Profile() {
     const { name }: any = useParams();
     const [open, setopen] = useState<boolean>(false);
     const [specific, setSpecific] = useState<string[]>([]);
-    let ArrayUser: any = {}
+
+    // show any user profile  on which user click
+    let ArrayUser: any = {};
     specific.map((userData: any) => (`:${userData.username}` === name ? ArrayUser = userData : ''))
 
+
+    // snaping all post from db fir profile page
     useEffect(() => {
         const fetchPosts = () => {
             db.collection('posts').onSnapshot((res) => {
@@ -30,24 +34,20 @@ function Profile() {
             })
         }
         fetchPosts()
-    }, [])
+    }, []);
 
     return (
         <div>
-        
             <div className="w-full mt-12 h-96 bg-white border-b-2 border-gray-300 to-white  flex justify-end items-center">
-            <div style={{  backgroundImage: `url(${ArrayUser.image})`,backgroundBlendMode:'revert',backgroundPosition:'cover' }} className="w-11/12 mx-auto mt-2 rounded-md shadow-lg  flex justify-center items-center h-52  bg-red-300">
-                <img className='h-40 w-40 mt-32 ml-44 z-10    border-4  border-white  rounded-full' src={ArrayUser.profilePic} alt="" />
-                   <h2 className=" text-2xl font-bold right-32 top-40 z-30 relative">{ArrayUser.username}</h2>
-              <FaCameraRetro className="text-3xl  text-gray-500  shadow-xl right-48 top-32 relative  z-30  bg-gray-100" />
+                <div style={{ backgroundImage: `url(${ArrayUser.image})`, backgroundBlendMode: 'revert', backgroundPosition: 'cover' }} className="w-11/12 mx-auto mt-2 rounded-md shadow-lg  flex justify-center items-center h-52  bg-red-300">
+                    <img className='h-40 w-40 mt-32 ml-44 z-10    border-4  border-white  rounded-full' src={ArrayUser.profilePic} alt="" />
+                    <h2 className=" text-2xl font-bold right-32 top-40 z-30 relative">{ArrayUser.username}</h2>
+                    <FaCameraRetro className="text-3xl  text-gray-500  shadow-xl right-48 top-32 relative  z-30  bg-gray-100" />
+                </div>
             </div>
-                   
-            </div>
-         
+
             {specific.map((userData: any) => (`:${userData.username}` === name ?
-            
                 <>
-            
                     <div className="rounded-xl  relative left-1/3 mb-8 top-8 shadow-md mt-6 px-6  py-6 w-1/2   flex space-y-4 flex-col  items-center bg-white">
 
                         <div className="flex absolute left-6 ">
@@ -66,8 +66,6 @@ function Profile() {
                         </div>
                         <Emoji id={userData.id} holePost={userData} />
                         <Comment open={open} id={userData.id} />
-                      
-
                     </div>
                 </>
                 : ''))}

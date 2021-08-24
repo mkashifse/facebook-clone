@@ -7,7 +7,8 @@ import firebase from "firebase"
 import { useSelector } from "react-redux";
 import { UserState } from "../provider/userReducer";
 import { collectionSnapshot } from "../utils";
-import { Iprops } from "../types"
+import { Iprops } from "../types";
+
 interface Iprops2 {
     id: string;
     holePost: any | string[],
@@ -23,16 +24,23 @@ interface Ic {
     uid: string;
     data: string
 }
+interface emojiType {
+    feelings: object;
+    feeling: any;
+}
 
 function Emoji(props: Iprops2) {
     let user = useSelector<UserState, UserState["user"]>((state) => state.user);
-
+    const [emojiData, setEmojiData] = useState<emojiType[]>([])
+    const [userFeel, setUserFeel] = useState<string[]>([]);
     const [main, setMain] = useState({ T: FaThumbsUp, feeling: "like", color: 'text-blue-500' });
     const [feedback, setFeedback] = useState<boolean>(false);
     const [open, setopen] = useState<boolean>(false);
     const [getFeeling, setGetFeeling] = useState<Ic[]>([]);
-    const [openEmoji, setOpenEmoji] = useState<boolean>(false)
+    const [openEmoji, setOpenEmoji] = useState<boolean>(false);
+    const [posts, setPosts] = useState<Iprop3[]>([]);
 
+    /// emoji icons
     const [icons, setIcons] = useState({
         angry: FaRegSadCry,
         smile: FaRegSmileWink,
@@ -42,7 +50,6 @@ function Emoji(props: Iprops2) {
         wow: FaRegLaughBeam
     });
 
-    const [posts, setPosts] = useState<Iprop3[]>([]);
     useEffect(() => {
         collectionSnapshot<Iprop3[]>("posts", (list: Iprop3[]) => {
             setPosts(list);
@@ -50,55 +57,28 @@ function Emoji(props: Iprops2) {
     }, []);
 
 
-       useEffect(()=>{
-            db.collection('users').doc(user.uid).set({
-                       username:user.displayName,
-                       userImage:user.photoURL
-             })
+    /// add every  users into users collection
+    useEffect(() => {
+        db.collection('users').doc(user.uid).set({
+            username: user.displayName,
+            userImage: user.photoURL
+        })
 
-       },[]);
-
-
-
-
-    interface emojiType {
-        feelings: object;
-        feeling: any;
-    }
-    const [emojiData, setEmojiData] = useState<emojiType[]>([])
-
-    const [userFeel, setUserFeel] = useState<string[]>([]);
+    }, []);
 
     /// get from posts doc id 
     useEffect(() => {
         db.collection('posts').doc(props.id).onSnapshot((res) => {
             let data = res.data() as any;
-            if (data.feelings) {
+            if (data && data.feelings) {
                 let parseArray = Object.values(data.feelings) as any;
                 setUserFeel(parseArray)
-
             }
         })
 
-    }, [])
+    }, [props.id])
 
-    //// get from all posts 
-
-    // useEffect(() => {
-    //     db.collection('posts').onSnapshot((res) => {
-    //         const emojiData = res.docs.map((doc) => (doc.data())) as any;
-    //         const emojiArray = emojiData.map((h: any) => Object.values(h.feelings))
-    //         const emojiObject = emojiData.map((h: any) => Object.keys(h.feelings))
-    //         setEmojiData(emojiArray);
-    //                    setUserId(emojiObject)
-
-
-    //     })
-
-    // }, [])
-    // emojiData.map((obj: any) => console.log(obj.map((val: any) => val), "how")
-    ////// update emoji
-    // console.log(emojiData,"oooo")
+    /// update emoji from db
     const updateFeeling = (feeling: string) => {
         db.collection('posts').doc(props.id).update({
             feelings: {
@@ -109,6 +89,7 @@ function Emoji(props: Iprops2) {
         )
     }
 
+    /// open and close ui stuff
     const openComment = () => {
         setopen(!open);
     }

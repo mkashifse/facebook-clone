@@ -22,7 +22,7 @@ function Post(props) {
         }
     };
     var checkForFriendPost = function () {
-        var foundFriend = friendIds.find(function (friendId) { return friendId[1].receiver === props.userId; });
+        var foundFriend = friendIds.find(function (friendId) { return friendId[1].receiver === user.uid; });
         if (foundFriend) {
             return true;
         }
@@ -42,7 +42,7 @@ function Post(props) {
     // const openComment = () => {
     //     setopen(!open);
     // }
-    return (react_1["default"].createElement(react_1["default"].Fragment, null, checkForCurrentUserPost() ?
+    return (react_1["default"].createElement(react_1["default"].Fragment, null, checkForFriendPost() ?
         react_1["default"].createElement("div", { className: "rounded-xl  relative shadow-md mt-4 px-6  py-6 w-2/3 mx-auto flex space-y-4 flex-col items-center bg-white" },
             react_1["default"].createElement("div", { className: "flex absolute left-6 " },
                 react_1["default"].createElement("img", { className: "w-20 border-2 p-1 border-gray-200 h-20 rounded-full", src: props.profilePic, alt: "" }),
@@ -55,6 +55,6 @@ function Post(props) {
                     props.message),
                 react_1["default"].createElement("img", { className: "w-full h-1/3 mt-2", src: props.image, alt: "" })),
             react_1["default"].createElement(Emoji_1["default"], { id: props.id, holePost: props.holePost }),
-            react_1["default"].createElement(Comment_1["default"], { open: open, id: props.id })) : ''));
+            react_1["default"].createElement(Comment_1["default"], { open: open, id: props.id })) : 'nothinf'));
 }
 exports["default"] = Post;

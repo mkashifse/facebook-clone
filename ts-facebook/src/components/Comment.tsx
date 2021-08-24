@@ -12,17 +12,21 @@ interface IComment {
 }
 interface Ic {
     comment: string[],
-    username:string,
-    currentTime:string
+    username: string,
+    currentTime: string
 }
 
 function Comment(props: IComment) {
     let user = useSelector<UserState, UserState["user"]>((state) => state.user);
     const [userComment, setUserComment] = useState<string>('');
+    const [getComment, setGetComment] = useState<Ic[]>([]);
 
+    // comment typing...  handler
     const typeComment = (e: any) => {
         setUserComment(e.target.value);
     }
+
+    /// add comment into firebase collection
     const commentAdd = (e: any) => {
         e.preventDefault();
         db.collection('posts').doc(props.id).collection("comments").add({
@@ -33,16 +37,16 @@ function Comment(props: IComment) {
         setUserComment("");
     }
 
-
-    const [getComment, setGetComment] = useState<Ic[]>([]);
+    // get real time comment from db 
     useEffect(() => {
-        db.collection('posts').doc(props.id).collection('comments').orderBy('currentTime',"desc").onSnapshot((res)=>{
+        db.collection('posts').doc(props.id).collection('comments').orderBy('currentTime', "desc").onSnapshot((res) => {
             const list = res.docs.map((doc) => (doc.data())) as any;
             setGetComment(list);
 
         })
-    }, [props.id]);     /// props.id as a dependency
- 
+    }, [props.id]);  
+    
+
     return (
         <div className={`w-full  `}>
             <form onSubmit={commentAdd} className="w-full flex justify-start flex-col items-center py-4 bg-gray-100">
@@ -57,9 +61,9 @@ function Comment(props: IComment) {
 
                 {getComment.map(user => (
                     <div className="  flex bg-gray-200 py-2 mb-0.5 mx-10 w-2/3 px-8 text-start rounded-full">
-                       <h1 className="font-semibold">{user.username}</h1>:
-                       <p>{ user.comment}</p>
-                     </div>
+                        <h1 className="font-semibold">{user.username}</h1>:
+                        <p>{user.comment}</p>
+                    </div>
                 ))}
             </form>
 

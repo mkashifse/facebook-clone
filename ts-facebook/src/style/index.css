@@ -4,3 +4,7 @@
 body{
     background-color: rgb(243, 245, 245);
 }
+#privacyPost *{
+       background:rgb(231, 235, 231);
+       border-radius: 50%;
+}
