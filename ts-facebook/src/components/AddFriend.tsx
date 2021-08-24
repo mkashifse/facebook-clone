@@ -18,7 +18,7 @@ function AddFriend() {
             name: user.displayName,
             photo: user.photoURL,
             dateTime: new Date().toLocaleString(),
-            status:'pending'
+            status: 'pending'
         }
 
         firebase.database().ref('notification').push(notification, (error) => {
@@ -28,9 +28,9 @@ function AddFriend() {
 
         })
     }
-    /////// check id of receiver of request
+    /////// check id of receiver  request
     const checkRequest = (suggestionBoxUser: any) => {
-     
+
         const found = notificationList.find(
             item => item.sendTo === suggestionBoxUser.id
         );
@@ -42,17 +42,18 @@ function AddFriend() {
         }
     };
 
-    /// useEffect for fetcging post from database
+    /// useEffect for fetcging users from database
 
     useEffect(() => {
-        const fetchPosts = () => {
+        const fetchUsers = () => {
             db.collection('users').onSnapshot((res) => {
                 setAllUser(res.docs.map((doc) => ({ ...doc.data(), id: doc.id })) as any)
             })
         }
-        fetchPosts()
+        fetchUsers()
     }, []);
 
+    /// getting notification from db
     useEffect(() => {
         let notiRef = firebase.database().ref('notification');
 
@@ -74,7 +75,7 @@ function AddFriend() {
                     <div className="  rounded-md shadow bg-white w-48 h-52 flex flex-col justify-center items-center  text-center content-center">
                         <img className="w-24 rounded border border-gray-200 h-24" src={userData.userImage} alt="" />
                         <p className="w-full text-center mt-2 text-xl ">{userData.username}</p>
-                        { checkRequest(userData) ?
+                        {checkRequest(userData) ?
                             <button className="  mt-4 w-11/12 p-1  text-center bg-red-500 text-white rounded">request send</button>
                             :
                             <button onClick={() => sendRequest(userData.id, index)}

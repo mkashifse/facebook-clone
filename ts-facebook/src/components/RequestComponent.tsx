@@ -1,66 +1,90 @@
 import React, { useEffect, useState } from 'react'
 import "../style/model.css";
-import firebase from 'firebase';
-import db from '../firestore.config';
 import { useSelector } from "react-redux";
 import { UserState } from "../provider/userReducer";
-
-type propOfModel = {
-    model: boolean,
+import firebase from 'firebase';
+import db from '../firestore.config';
+interface userProp {
+    id: any,
+    holeUser: any | any[],
+    model: boolean
 }
-function RequestComponent(props: propOfModel) {
+function RequestComponent(props: userProp) {
     const user = useSelector<UserState, UserState["user"]>((state) => state.user);
     const [userRequests, setUserRequests] = useState<any[]>([]);
-    const [userKeys, setUserKeys] = useState<any[]>([]);
+    const [users, setUsers] = useState<any[]>([])
+    const [friendIds, setFriendsIds] = useState<any[]>([]);
 
 
-
+// show notification to request receiver
     useEffect(() => {
         let notiRef = firebase.database().ref('notification');
-
         notiRef.orderByChild('sendTo').equalTo(user.uid).on('value', (userRequests: any) => {
-
             if (userRequests.val()) {
+                // convert into array with keys and values
                 const listOfData = Object.entries(userRequests.val())
                 setUserRequests(listOfData);
-
             }
         })
 
     }, [user.uid]);
 
+
+    useEffect(() => {
+        const fetchUsers = () => {
+            db.collection('users').onSnapshot((res) => {
+                setUsers(res.docs.map((doc) => ({ ...doc.data(), id: doc.id })) as any)
+            })
+        }
+        fetchUsers();
+
+    }, []);
+
+    //  get ids of friends if any user hae friends
+    useEffect(() => {
+        db.collection('users').doc(user.uid).collection('friend-list').onSnapshot((res) => {
+            setFriendsIds(res.docs.map((doc) => ({ id: doc.id }))) as any
+        })
+    }, []);
+
+
+    /////  when any user accept request this function will run
     const acceptRequest = (reqKey: any) => {
         firebase.database().ref('notification').child(reqKey).once('value', (noti: any) => {
-            let reqObj = noti.val();
+            var reqObj = noti.val();
             reqObj.status = "accept";
 
             firebase.database().ref('notification').child(reqKey).update(reqObj, (err) => {
                 if (err) alert(err);
                 else {
-                    const friendList = { sender: reqObj.sendFrom, receiver: reqObj.sendTo }
-                    firebase.database().ref('friend-list').push(friendList, (err) => {
-                        if (err) alert(err);
+                    db.collection('users').doc(reqObj.sendFrom).collection('friend-list').doc(user.uid).set({
+                        friends: reqObj.sendTo
                     })
+
                 }
+
             })
         })
 
     }
 
+    //  when reject any request then the removed from db and from ui
     const rejectRequest = (reqKey: any) => {
 
         firebase.database().ref('notification').child(reqKey).once('value', (noti: any) => {
             let reqObj = noti.val();
-            reqObj.status = "reject";
+            reqObj.status = "reject"
 
             firebase.database().ref('notification').child(reqKey).update(reqObj, (err) => {
-                if (err) alert(err);
+                if (err) alert(err)
                 else { }
             })
         })
 
 
     }
+
+
     return (
         <div className={`${props.model ? 'model' : 'closeModel'}`}>
             <div className={`${props.model ? 'visible' : 'noVisible'}`}>
