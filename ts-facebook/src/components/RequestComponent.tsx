@@ -58,7 +58,9 @@ function RequestComponent(props: userProp) {
                 if (err) alert(err);
                 else {
                     db.collection('users').doc(reqObj.sendFrom).collection('friend-list').doc(user.uid).set({
-                        friends: reqObj.sendTo
+                        friends: reqObj.sendTo,
+                        frImage:reqObj.friendImage,
+                        frName:reqObj.friendName
                     })
 
                 }

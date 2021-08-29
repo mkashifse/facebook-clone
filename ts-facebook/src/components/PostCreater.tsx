@@ -13,7 +13,8 @@ function PostCreater() {
     const [imageUrl,setImageUrl]=useState<string >("");
     const [postType,setPostType]=useState<string>('');
     const [friendIds,setFriendIds]=useState<any[]>([]);
-    console.log(postType)
+    console.log(postType);
+    console.log(friendIds,'ok see');
        
 
     useEffect(()=>{

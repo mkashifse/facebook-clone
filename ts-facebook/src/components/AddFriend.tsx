@@ -8,15 +8,19 @@ function AddFriend() {
     let user = useSelector<UserState, UserState["user"]>((state) => state.user);
     const [notificationList, setNotificationList] = useState<any[]>([]);
     const [allUser, setAllUser] = useState<string[]>([]);
+    console.log(allUser,'ok the report');
+    
 
 
     ///// add friend request in database
-    const sendRequest = (userIdOFsender: any, index: number) => {
+    const sendRequest = (userIdOFsender: any, name:any,image:any, index: number) => {
         let notification = {
             sendTo: userIdOFsender,
             sendFrom: user.uid,
             name: user.displayName,
             photo: user.photoURL,
+            friendImage:image,
+            friendName:name,
             dateTime: new Date().toLocaleString(),
             status: 'pending'
         }
@@ -78,7 +82,7 @@ function AddFriend() {
                         {checkRequest(userData) ?
                             <button className="  mt-4 w-11/12 p-1  text-center bg-red-500 text-white rounded">request send</button>
                             :
-                            <button onClick={() => sendRequest(userData.id, index)}
+                            <button onClick={() => sendRequest(userData.id,userData.username,userData.userImage, index)}
                                 className="  mt-4 w-11/12 p-1  text-center bg-blue-500 text-white rounded">Add Friend</button>
                         }
                     </div>

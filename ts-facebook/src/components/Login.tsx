@@ -19,7 +19,8 @@ function Login() {
         auth.signInWithPopup(provider).then((result) => {
             console.log(result);
             dispatch({ type: "add_user", payload: result.user });
-            history.push('/')
+            // localStorage.setItem('user',JSON.stringify(result.user))
+            // history.push('/dashboard')
         }).catch((error) => {
             alert(error.message);
         })

@@ -8,3 +8,21 @@ body{
        background:rgb(231, 235, 231);
        border-radius: 50%;
 }
+
+.chat{
+    box-shadow: 0px 0px 10px rgb(182, 179, 179);
+}
+.bg-chat{
+    background-image: url('https://as1.ftcdn.net/v2/jpg/03/88/42/22/1000_F_388422200_RItJfnTHqjCHgaQoeO1yTyoNKi2OtEgB.jpg');
+    background-position: center;
+    background-size: cover;
+    background-repeat: cover;
+}
+.hide-side{
+     position:fixed;
+     left:-15%;
+     transition: all 0.7s ease;
+}
+.trans{
+    transition: all 0.7s ease;
+}

@@ -5,7 +5,8 @@ import Feed from './components/Feed';
 import Login from './components/Login';
 import Navbar from './components/Navbar';
 import Profile from './components/Profile';
-import AddFriend from "./components/AddFriend"
+import AddFriend from "./components/AddFriend";
+import ChatSideNav from './components/ChatSideNav';
 import "./style/index.css";
 import { useSelector } from "react-redux";
 import { UserState } from "../src/provider/userReducer";
@@ -29,6 +30,7 @@ function App() {
                   <PostCreater />
                    <AddFriend/>
                   <Feed />
+                  <ChatSideNav />
                 </>
             }
 
